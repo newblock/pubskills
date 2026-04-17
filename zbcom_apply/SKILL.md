@@ -45,9 +45,6 @@ Base URL: https://resume.gpuart.cn
 | `/api/seeker/basics/:id` | PUT | 修改基础信息 |
 | `/api/seeker/me` | GET | 查看我的完整档案（含审核状态） |
 | `/api/seeker/my-skills` | POST | 添加技能（需审核通过） |
-| `/api/seeker/admin/basics/:id/approve` | PUT | 管理员通过审核 |
-| `/api/seeker/admin/basics/:id/reject` | PUT | 管理员拒绝审核 |
-| `/api/seeker/admin/basics/pending` | GET | 管理员查看待审核列表 |
 
 ### 接口参数详情
 
@@ -188,12 +185,6 @@ GET /api/auth/check-email?email=user@example.com
 
 **必须拦截并提示**：
 > "你的基础信息审核状态为 pending/rejected，暂无权操作。请先等待管理员审核通过。"
-
-### 4. 管理员审核（仅当用户是管理员时）
-
-当管理员说"查看待审核"、"通过审核"、"拒绝审核"时：
-- 调用 `GET /api/seeker/admin/basics/pending` 查看列表
-- 根据提供的 id 调用 `approve` 或 `reject`
 
 ## JSON 批量录入
 
