@@ -1,13 +1,13 @@
 ---
 name: zbcom_apply
-description: 帮助求职者通过 API Key 管理简历基础信息（basics），支持交互式对话和 JSON 批量录入，含管理员审核机制。触发关键字：申请加入、加入社区、申请知北、加入技术社区、加入知北。
+description: 帮助技术型 OPC 通过 API Key 管理简历基础信息（basics），支持交互式对话和 JSON 批量录入，含管理员审核机制。触发关键字：申请加入、加入社区、申请知北、加入技术社区、加入知北。
 ---
 
 # Resume Seeker Skill
 
 ## 简介
 
-本 Skill 用于帮助求职者通过自然语言对话，管理自己的简历基础信息（`seeker_basics`）。
+本 Skill 用于帮助技术型 OPC 通过自然语言对话，管理自己的简历基础信息（`seeker_basics`）。
 
 支持两种录入方式：
 - **交互式对话**：逐字段询问并填写
@@ -50,7 +50,7 @@ Base URL: https://resume.gpuart.cn
 ### 1. 注册账号 / 重置 API Key
 
 当用户要求**注册账号**时：
-1. 收集邮箱、密码、用户类型（`seeker`）
+1. 收集邮箱、密码、用户类型（`seeker`，对外显示为 **技术型 OPC**）
 2. 调用 `POST /api/auth/register`
 3. **即使后端响应包含 API Key，也严禁直接展示给用户**
 4. 统一回复："注册成功，请查收邮件获取 API Key，收到后发给我即可继续。"
