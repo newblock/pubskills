@@ -1,6 +1,6 @@
 ---
 name: zbcom_apply
-description: 帮助求职者通过 API Key 管理简历基础信息（basics），支持交互式对话和 JSON 批量录入，含管理员审核机制。
+description: 帮助求职者通过 API Key 管理简历基础信息（basics），支持交互式对话和 JSON 批量录入，含管理员审核机制。触发关键字：申请加入、加入社区、申请知北、加入技术社区、加入知北。
 ---
 
 # Resume Seeker Skill
