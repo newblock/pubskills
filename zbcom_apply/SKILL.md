@@ -48,6 +48,75 @@ Base URL: https://resume.gpuart.cn
 | `/api/seeker/admin/basics/:id/reject` | PUT | 管理员拒绝审核 |
 | `/api/seeker/admin/basics/pending` | GET | 管理员查看待审核列表 |
 
+### 接口参数详情
+
+**所有请求必须携带 `Content-Type: application/json`。**
+
+#### 1. `POST /api/auth/register` — 注册账号
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `email` | string | ✅ | 邮箱地址 |
+| `password` | string | ✅ | 登录密码 |
+| `userType` | string | ✅ | 用户类型，固定传 `seeker`（兼容字段 `type`） |
+
+**请求示例**：
+```json
+{
+  "email": "user@example.com",
+  "password": "your-password",
+  "userType": "seeker"
+}
+```
+
+**常见响应**：
+- `201` — `{ "message": "注册成功，请查收邮件获取 API Key", "user": { ... } }`
+- `409` — `{ "message": "邮箱已被注册" }`
+- `400` — `{ "message": "邮箱、密码和用户类型为必填项" }`
+
+#### 2. `POST /api/auth/reset-api-key` — 重置 API Key
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `email` | string | ✅ | 注册邮箱 |
+| `password` | string | ✅ | 登录密码 |
+
+**请求示例**：
+```json
+{
+  "email": "user@example.com",
+  "password": "your-password"
+}
+```
+
+**常见响应**：
+- `200` — `{ "message": "API Key 已重置，请查收邮件获取新的 API Key" }`
+- `401` — `{ "message": "邮箱或密码错误" }`
+
+#### 3. `GET /api/seeker/me` — 查看我的档案
+
+**请求头**：`X-API-Key: <your-api-key>`
+
+**常见响应**：
+- `200` — 返回用户完整档案，包含 `basics`（基础信息及 `status`）、`skills`、`experience` 等
+- `401/403` — API Key 无效或过期
+
+#### 4. `POST /api/seeker/basics` — 提交基础信息
+
+**请求头**：`X-API-Key: <your-api-key>`
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `name` | string | ✅ | 姓名 |
+| `wechat` | string | ✅ | 微信号 |
+| `github` | string | ✅ | GitHub 地址 |
+| `website` | string | ❌ | 个人网站 |
+| `intro` | string | ❌ | 自我介绍 |
+
+#### 5. `PUT /api/seeker/basics/:id` — 修改基础信息
+
+请求头和字段与 `POST /api/seeker/basics` 相同，URL 中的 `:id` 为 `basics.id`。
+
 ## 交互式工作流
 
 ### 1. 从邮箱开始（注册 / 登录 / 重置 API Key）
