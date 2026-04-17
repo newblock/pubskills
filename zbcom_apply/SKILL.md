@@ -74,14 +74,14 @@ GET /api/auth/check-email?email=user@example.com
 |------|------|------|------|
 | `email` | string | ✅ | 邮箱地址 |
 | `password` | string | ✅ | 登录密码 |
-| `userType` | string | ✅ | 用户类型，固定传 `seeker`（兼容字段 `type`） |
+| `userType` | string | ✅ | 用户类型，后端固定传 `seeker`，对外显示为 **技术型 OPC** / **技术专家**（兼容字段 `type`） |
 
 **请求示例**：
 ```json
 {
   "email": "user@example.com",
   "password": "your-password",
-  "userType": "seeker"
+  "userType": "seeker"  /* 后端固定值，对外显示为 技术型 OPC */
 }
 ```
 
@@ -147,7 +147,7 @@ GET /api/auth/check-email?email=user@example.com
 
 #### A. 邮箱未注册
 - 收集**密码**
-- 收集**用户类型**（`seeker`，对外显示为 **技术型 OPC**）
+- 收集**用户类型**（对外显示为 **技术型 OPC** 或 **技术专家**，后端固定传 `seeker`）
 - 调用 `POST /api/auth/register`
 - 统一回复："注册成功，请查收邮件获取 API Key，收到后发给我即可继续。"
 
