@@ -38,6 +38,7 @@ Base URL: https://resume.gpuart.cn
 
 | 接口 | 方法 | 说明 |
 |------|------|------|
+| `/api/auth/check-email` | GET | 检查邮箱是否已注册 |
 | `/api/auth/register` | POST | 注册账号 |
 | `/api/auth/reset-api-key` | POST | 重置 API Key（验证邮箱密码后重新发送） |
 | `/api/seeker/basics` | POST | 提交基础信息 |
@@ -52,7 +53,22 @@ Base URL: https://resume.gpuart.cn
 
 **所有请求必须携带 `Content-Type: application/json`。**
 
-#### 1. `POST /api/auth/register` — 注册账号
+#### 1. `GET /api/auth/check-email` — 检查邮箱是否已注册
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `email` | string | ✅ | 邮箱地址 |
+
+**请求示例**：
+```
+GET /api/auth/check-email?email=user@example.com
+```
+
+**常见响应**：
+- `200` 已注册 — `{ "registered": true, "message": "邮箱已被注册" }`
+- `200` 未注册 — `{ "registered": false, "message": "邮箱未注册" }`
+
+#### 2. `POST /api/auth/register` — 注册账号
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
@@ -74,7 +90,7 @@ Base URL: https://resume.gpuart.cn
 - `409` — `{ "message": "邮箱已被注册" }`
 - `400` — `{ "message": "邮箱、密码和用户类型为必填项" }`
 
-#### 2. `POST /api/auth/reset-api-key` — 重置 API Key
+#### 3. `POST /api/auth/reset-api-key` — 重置 API Key
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
@@ -93,7 +109,7 @@ Base URL: https://resume.gpuart.cn
 - `200` — `{ "message": "API Key 已重置，请查收邮件获取新的 API Key" }`
 - `401` — `{ "message": "邮箱或密码错误" }`
 
-#### 3. `GET /api/seeker/me` — 查看我的档案
+#### 4. `GET /api/seeker/me` — 查看我的档案
 
 **请求头**：`X-API-Key: <your-api-key>`
 
@@ -101,7 +117,7 @@ Base URL: https://resume.gpuart.cn
 - `200` — 返回用户完整档案，包含 `basics`（基础信息及 `status`）、`skills`、`experience` 等
 - `401/403` — API Key 无效或过期
 
-#### 4. `POST /api/seeker/basics` — 提交基础信息
+#### 5. `POST /api/seeker/basics` — 提交基础信息
 
 **请求头**：`X-API-Key: <your-api-key>`
 
@@ -124,10 +140,10 @@ Base URL: https://resume.gpuart.cn
 当用户说"申请加入"、"加入社区"或首次进入 Skill 时：
 
 1. **询问邮箱地址**："请告诉我你的邮箱地址"
-2. **检查邮箱状态**：
-   - 可以调用 `POST /api/auth/register` 试探（若返回 409 "邮箱已被注册"，则走已注册流程）
-   - 或直接询问用户"你是否已经注册过账号？"
+2. **调用 `GET /api/auth/check-email?email=xxx` 检查邮箱状态**
 3. **分流程处理**：
+
+> **重要**：严禁在用户未提供密码前调用 `POST /api/auth/register` 试探注册，这会导致账号被注册但用户不知道密码。
 
 #### A. 邮箱未注册
 - 收集**密码**
