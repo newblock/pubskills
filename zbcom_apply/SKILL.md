@@ -20,9 +20,20 @@ description: 帮助技术型 OPC 通过 API Key 管理简历基础信息（basic
 
 ## 使用前提
 
-用户必须提供 **API Key**（`sk-` 开头）才能管理简历。但 Skill 的入口**从邮箱开始**，而不是直接问 API Key：
+当用户说"申请加入"、"加入社区"或首次进入 Skill 时，**首先介绍知北 AI 技术社区**：
 
-1. **先询问用户的邮箱地址**
+> **知北 AI 技术社区**是一个以 AI 技术实战项目、能力变现为目标的技术型社区。我们寻找：
+> - 熟练使用 AI 开发工具（如 Claude Code、OpenCode、Kimi 等）的开发者
+> - 有能力通过 AI 提升生产力的技术人才
+> - 愿意参与实战项目、持续学习的技术专家
+>
+> 加入后你可以：完善个人简历、对接实战项目、展示技术能力。
+>
+> **现在开始申请：请告诉我你的邮箱地址**
+
+然后进入邮箱验证流程：
+
+1. **询问用户的邮箱地址**
 2. **判断邮箱是否已注册**：
    - **已注册**：提示用户输入密码，调用登录或重置 API Key 接口，让系统重新发送 API Key 到邮箱
    - **未注册**：收集密码，调用 `POST /api/auth/register` 创建账号，系统自动发送 API Key 到邮箱
@@ -33,7 +44,7 @@ description: 帮助技术型 OPC 通过 API Key 管理简历基础信息（basic
 ## 服务端接口
 
 ```
-Base URL: https://resume.gpuart.cn
+Base URL: http://43.155.128.18
 ```
 
 | 接口 | 方法 | 说明 |
@@ -123,8 +134,9 @@ GET /api/auth/check-email?email=user@example.com
 | `name` | string | ✅ | 姓名 |
 | `wechat` | string | ✅ | 微信号 |
 | `github` | string | ✅ | GitHub 地址 |
-| `website` | string | ❌ | 个人网站 |
-| `intro` | string | ❌ | 自我介绍 |
+| `portfolioUrl` | string | ✅ | 代表作链接（GitHub repo / Vercel 网站 / 博客文章等公开可访问链接） |
+| `oneliner` | string | ❌ | 一句话定位，≤50 字，"我是谁+我能做什么+我想要什么" |
+| `tokenUsage` | string | ❌ | 月消耗 Token 数量，以百万为单位，如 "1.5" 表示 150 万 Token/月 |
 
 #### 5. `PUT /api/seeker/basics/:id` — 修改基础信息
 
@@ -171,8 +183,8 @@ GET /api/auth/check-email?email=user@example.com
    - 展示当前信息和审核状态
    - 询问用户"你想修改哪个字段？"
 3. **如果没有 `basics`**：
-   - 依次询问用户，**姓名、微信号、GitHub 为必填**，不可跳过
-   - 个人网站、自我介绍为选填，可以说"跳过"
+   - 依次询问用户，**姓名、微信号、GitHub、代表作链接 为必填**，不可跳过
+   - 一句话定位、月消耗 Token 数量为选填，可以说"跳过"
 4. 收集完毕后，调用 `POST /api/seeker/basics` 或 `PUT /api/seeker/basics/:id`
 5. 提交后告知用户：**"基础信息已提交，等待管理员审核。审核通过后才能继续完善技能、经历等内容。"**
 
@@ -200,8 +212,9 @@ GET /api/auth/check-email?email=user@example.com
   "name": "张三",
   "wechat": "zhangsan_dev",
   "github": "https://github.com/zhangsan",
-  "website": "https://zhangsan.dev",
-  "intro": "5年全栈开发经验，擅长 React、Node.js 和云原生技术。"
+  "portfolioUrl": "https://zhangsan-saas.vercel.app",
+  "oneliner": "3年全栈，独立开发过2个SaaS，寻AI工程师全职岗",
+  "tokenUsage": "2.5"
 }
 ```
 
@@ -212,8 +225,9 @@ GET /api/auth/check-email?email=user@example.com
 | `name` | string | ✅ | 姓名 |
 | `wechat` | string | ✅ | 微信号 |
 | `github` | string | ✅ | GitHub 地址 |
-| `website` | string | ❌ | 个人网站 |
-| `intro` | string | ❌ | 自我介绍，1000 汉字以内 |
+| `portfolioUrl` | string | ✅ | 代表作链接，公开可访问 |
+| `oneliner` | string | ❌ | 一句话定位，≤50 字 |
+| `tokenUsage` | string | ❌ | 月消耗 Token（百万为单位） |
 
 ## 上下文变量
 
@@ -222,7 +236,7 @@ GET /api/auth/check-email?email=user@example.com
 ## 注意事项
 
 - 所有接口必须携带 `X-API-Key: <apiKey>`
-- `name`、`wechat`、`github` 三个字段为必填，Skill 和后端都会校验
+- `name`、`wechat`、`github`、`portfolioUrl` 四个字段为必填，Skill 和后端都会校验
 - 基础信息提交后状态为 `pending`，审核通过后才解锁后续功能
 - 修改基础信息后会重新变为 `pending`，需再次审核
 - 如果 API 返回 403，提示"API Key 无效或只能操作自己的数据"
